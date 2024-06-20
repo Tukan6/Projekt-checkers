@@ -1,0 +1,48 @@
+Jak program funguje:
+- nejdrive se nageneruje pomoci gridu hraci plocha, pote si vytvorim komponenty pro hrace jedna a hrace dva
+- vytvorim si 2d pole, kde mam hozene hodnoty z enumu
+- hodnoty jsou: hrac jedna, hrac dva, prazdne policko, mozny pohyb
+- toto pole mi pomuze pri porovnavani a zjistovani pozic u pohybu figurek
+- komponenty pote vlozim na hraci desku, nejdriv hrace jedna, ve for smyčce si vzdy zjistim, zda je index smicky sudy nebo lichy, a podle toho zrovna na danou pozici na desce vlozim figurku a nebo ne
+- takhle to udelam i s druhym hracem, akorat si kontroluju liche, aby byly oproti opacnemu hracovi diagonalne
+- pro prepinani hracu je vytvorena promenna jestli je na rade prvni hrac, ktery i zacina
+- po kliknuti na figurku se v prislusne metode zjisti radek a sloupek kde se figurka nachazi, pote zjistim, zda uz neni nakliknuta nejaka jina figurka, pokud ne, pokracuju normalne, pokud uz je nakliknuta jina, pozice se resetuje, a do metody vlezu znovu s novou figurkou
+- tedka zjistuju, zda je figurka na kraji, nebo "uprostred" desky, kdyz je na kraji tak pracuju jenom se stranou odvracenou od kraje desky, jinak bych byl mimo hranice desky = error
+- vzdycky se nejdriv kouknu, zda uz je diagonalne od nakliknute figurky nejaka pratelska figurka, v takovem pripade se nic negeneruje, protoze timto smerem se nemuzu v tuto chvili nijak pohnout
+- pokud na vedlejsi diagonalni pozici od puvodni figurky neni nic, nageneruje se tam komponent zelene tecky, ktera znazornuje mozny pohyb zde, ta je samozrejme klikatelna
+- pokud se na vedlejsi diagonalni pozici nachazi nepritelska figurka, tak si nejdriv zjistim,  zda se za ni nachazi bud moje, nepratelska figurka nebo kraj desky, pokud ani jedno, zelena tecka znazornujici mozny pohyb se nageneruje az o jednu pozici za touto nepratelskou figurkou, a je to jediny mozny pohyb, kam v tuto situaci muzu
+- v situaci ze muzu kliknout na pozici, kde nic neni, tak se tam jen pohnu, tim ze jen nastavim row a column u dane komponenty, zelene tecky se smazou, na puvodni pozici figurky se nastavi v poli, ze uz se zde nic nenachazi a na nove pozici se nastavi pozice prislusneho hrace, hrac ktery je na tahu se prehodi na druheho hrace
+- v situaci ze muzu vyhodit nepratelskou figurku (kdyz je ta moznost tak musim), skocim za figurku, podle smeru preskoceni (levo, pravo) vlezu do prislusne metody, kde si zjistim od nove pozice na kterou jsem skocil pozici nepratelske figurky kterou jsem prave vyhodil, projedu si celou herni desku a porovnavam, zda uz se nachazim na teto pozici, kterou chci smazat (vyhozena figurka), az se tam dostanu, tak komponentu jednoduse smazu a odectu od pocitadla zbivajicich hracu daneho hrace
+- uplne stejne to funguje pro oba hrace, akorat je vse zrcadlove otocene
+- kdyz figurka dorazi na opacny konec desky, zmeni se na kralovnu, na figurce se objevi pismeno "k"
+- ta se muze hybat diagonalne jak daleko chce
+- to funguje na principu, ze si zvlast kontroluju pozici diagonalne vedle kralovny ve vsech smerech zvlast (vlevo-nahoru, vpravo-nahoru, ...)
+- vzdycky si po celem cyklu kontrolovani kazdeho smeru posunu vzadlenost kontrolovani o jeden dal
+- kontroluju tyto veci: pratelskou figurku, nepratelskou figurku, kraj desky
+- maximalni vzdalenost, na kterou kontroluju je 7 policek od kralovny, protoze deska je 8x8, takze dal se jit neda
+- pro kazdy smer je udelana promenna, ktera muze kontrolovani jednotliveho smeru vypnout
+- situace pro pratelskou a nepratelskou figurku jsou stejne jako u normalni male figurky, pokud je pratelska, smer se vypne a uz se nekontroluje do konce cyklu teto kralovny
+- pokud je nepratleska, kouknu se za ni, pokud tam neni kraj, nebo jina figurka, muzu ji preskocit a smer se ukonci
+- u kralovny jsou ctyry smery vyhozeni, oproti malym figurkam kde jsou smery jen dva
+- smazani vyhozene figurky funguje stejne jako u male figurky
+- v jednotlivych smerech se muzu posunout, jak daleko chci, a muzu cestovat diagonalne dozadu i dopredu oproti malym figurkam, ktere se pohybuji jenom diagonalne ve smeru dopredu
+- kralovna se muze vyhodit stejnym zpusobem jako mala figurka, kdyz ji jina mala nebo kralovna preskoci
+- hraje se do doby, nez je nejaky hrac bez figurek, to kontroluju pomoci pocitadla figurek, kde je nastaveno 12 figurek
+- po vyhre jednoho s hracu se objevi napis hrace ktery vyhral, a je konec
+
+
+jednotlive funkce, a kousky kodu:
+GENEROVANI DESKY A FIGUREK
+- nagenerovani desky se dela v xamlu rucne, vytvorim si grid a vsechny pozice
+- figurky se nahazou na grid pomoci zjistovani sude a liche pozice
+- nejdriv pro jistotu smazu vsechny definitions a children na desce
+- pote si nadefinuju radky a sloupce
+- nejdrive generuju hrace jedna, ke kazde figurce hodim klick
+- pokud jsem ve for smycce na sude pozici, figurku vlozim
+- na dalsim radku kontorluju liche
+- a na tretim za se sude
+- u druheho hrace to je naopak, nejdriv liche, pak sude a nakonec zase liche
+POHYB HRACE
+- zjistim kdo je na rade, jestli druhy hrac tak se nic nedeje, a cekam na kliknuti na druheho hrace
+- pokud prvni tak hraju
+- 
