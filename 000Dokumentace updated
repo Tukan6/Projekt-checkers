@@ -32,6 +32,14 @@ Jak program funguje:
 
 
 jednotlive funkce, a kousky kodu:
+VYTVORENI PROMENNYCH A POLÍ
+- nejdriv vytvorim enum kde je hrac1, hrac2, none, cango
+- rows a cols, nastavim na 8, protoze deska je 8x8
+- 2d pole BoardType - nastavuje po cele desce hodnoty z enumu
+- p1turn - kdo je na rade
+- isclicked - je uz nakliknuta nejaka figurka
+- cantake - muzu vyhodit nepratelskou figurku
+- 
 GENEROVANI DESKY A FIGUREK
 - nagenerovani desky se dela v xamlu rucne, vytvorim si grid a vsechny pozice
 - figurky se nahazou na grid pomoci zjistovani sude a liche pozice
@@ -45,4 +53,47 @@ GENEROVANI DESKY A FIGUREK
 POHYB HRACE
 - zjistim kdo je na rade, jestli druhy hrac tak se nic nedeje, a cekam na kliknuti na druheho hrace
 - pokud prvni tak hraju
-- 
+- vlezu do prvni metody pro hrace jedna - Player1_Click
+- nejdriv zjistim, zda je nakliknuta jina figurka, pokud ano, smazu zelene kolecka pro pohyb, vsechny promenne dam na false (nakliknuta jina figurka, jeslti muzu vyhodit), pote do metody vlezu znovu s novou figurkou
+- zjistim jestli je nakliknuta figurka na kraji desky, pokud ano kontroluju jen stranu odvracenou od kraje
+- nastavim ze uz mam nakliknutou figurku na true a vytvorim kolecko pro pohyb, nastavim mu klick na metodu cango1 (metoda pro pohyb pro hrace 1)
+- nejdriv zjistim jestli je vedle hrac dva, pokud ano tak zjistim jestli je za nim jeste misto nebo jina figurka, pokud za ni neco je, nemuzu vyhodit a nikam se nemuzu pohnout
+- pokud za ni nic neni, kolecko pro pohyb posunu az za ni, a nastavim si, ze tato figurka muze vyhodit, a normalni pohyb o jeden kde nic neni se zrusi, a nemam na vyber nez vyhodit
+- kolecko pro pohyb je normalni komponenta kterou si vzdy nageneruju nebo smazu podle situace, vzdycky ji pridam klick pro urcenou metodu na pohyb
+- po kliknuti na pohyb vlezu do metody CanGo1_Click:
+  - tam si nejdriv nastavim puvodni pozici figurky v poli na none (nic se zde uz nenachazi)
+  - pote mam podminky na situace, kdy muzu vyhodit nejakou figurku, napriklad muzu vyhodit figurku smerem doleva, tak se dostanu pres podminku cantakeleft
+  - zde nejdriv nastavim pozici vyhozene figurky v poli na none
+  - pote foreach smyckou projedu celou desku, zde si vytvorim uielement, zjistim row a col pozice, kterou chci smazat (vyhozena figurka)
+  - pokud se uielement rovna pozici, kde se nachazi figurka kterou chci smazat, tak uielement smazu, tim se smaze vyhozena figurka
+  - odectu od pocitadla zbivajicih hracu
+  - cantake pro dany smer dam na false
+  - tedka nastavim row a col pro figurku, se kterou jsem ted hybal na pozici kam ji chci posunout
+  - nastavim v poli ze se zde nachazi figurka
+  - promennou ze mam nakliknutou figurku dam na false
+  - prehodim hrace, ktery je na tahu
+  - smazu vsechny kolecka pro pohyb
+  - pote jsou dve podminky, jedna jestli zbivaji jeste nejake figurky, pokud ano tak se normalne hraje dal, pokud ne ukaze se text kdo vyhral a je konec
+  - pak se kouknu, jestli uz jsem se neposunul na konec hraci desky, pokud ano, smazu dane figurce klick z metody CanGo1_Click a pridam ji klick na metodu Player1_kingClick
+  - nastavim visibilitu pismenka "k" na figurce na visible, takze se z figurky stala kralovna
+- po vyreseni pohybu se ceka na kliknuti na dalsi figurky, tentokrat u druheho hrace, pro toho plati vsechno stejne jako u hrace jedna, akorat je vsechno obracene a pohybuje se nahoru pricemz hrac jedna se pohybuje dolu (vsechno diagonalne)
+- pokud se ale klikne na kralovnu, tak se vleze do specialni metody Player1_kingClick (pro hrace jedna):
+  - opet zjistim zda je dany hrac na rade, pokud se udelam to same jako predtim, pokud ano, pokracuju
+  - nactu pozici kralovny do promennych row a col
+  - a vytvorim 4 promenne pro smery kontrolovani (nahoru - doleva, doprava; dolu - doleva, doprava)
+  - promenna pro smery urcuje, zda se bude dalsi smer nadale kontrolovat
+  - nejdriv zjistim, jestli nejsem v nejakem rohu, nebo na kraji desky, v tom pripade se hnedka zrusi smery pro strany, kde je stena
+  - pote nastavim, ze mam nakliknutou figurku, nastavim klick komponentu na pohyb, zjistim jeslti neni nejaka vedlejsi figurka nepratelska
+  - pokud je za nepratelskou figurkou nejaky objekt nebo stena, tento smer se ukonci
+  - pokud za ni nic neni, nastavim ze muzu vyhodit timto smerem, kolecko pro pohyb nastavim za figurku kterou muzu vyhodit, a smer se ukoncuje, kralovna ma na vyber, zda chce vyhodit nebo ne
+  - pokud je na kontrolovane pozici pratelska figurka, smer konci
+  - pokud ve smeru neni ani kraj, nepratelska figurka nebo pratelska figurka, vytvorim kolecko pro pohyb uplne normalne na policku na kterem zrovna kontroluji
+  - po skonceni jednoho cyklu kontrolovani se pricte index, to znamena, ze se kontroluje o jedno policko dal v danem diagonalnim smeru, ktery jeste neni ukonceny
+  - az se ukonci vsechny smery, muzu si vybrat, kam pujdu, nebo si treba nakliknout jinou figurku
+  - pohyb se potom zarizuje uplne stejne jako u male figurky v metode CanGo1_Click (nastavim row a col na pozici kde je kolecko pro pohyb, nastavim pole a vsechny promenne)
+
+pro hrace dva jsou metody stejne, jenom je cislo 2
+SetupBoard - na desku nahazi figurky a nastavi jim pozice v poli
+Player1_Click, Player2_Click - zajistuje vytvoreni kolecek pro pohyb
+Player1_kingClick, Player2_kingClick - zajistuje vytvoreni kolecek pro pohyb pro kralovnu
+CanGo1_Click, CanGo2_Click - zajistuje posunuti figurky na misto, kam jsme figurku posunuli, pripadne vyhodi vyhozene figurky
